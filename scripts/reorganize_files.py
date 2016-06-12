@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, os.path, time
+import os, os.path, time, glob
 
 src_path = "/Users/evan/testdir"
 tgt_path = "/Users/evan/dstdir"
@@ -15,7 +15,9 @@ def get_file_list( src_path, recursive=True ):
   for f in dir_list:
     full_path = "/".join([src_path, f])
     if (os.path.isfile(full_path)):
-      file_list.append(full_path)
+      for e in extensions:
+        if (full_path.endswith(e)):
+          file_list.append(full_path)
     else:
       if (recursive):
         file_list = file_list + get_file_list(full_path, True)
