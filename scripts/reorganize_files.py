@@ -2,14 +2,18 @@
 
 import os, os.path, time, hashlib
 
-src_path = "/Users/evan/testdir"
-tgt_path = "/Users/evan/dstdir"
+src_path = "/Volumes/hfs/backups/camera/Reorganized Movies/Newer/"
+tgt_path = "/Volumes/hfs/backups/camera/Reorganized Movies/py/"
 extensions = ['.mov', '.mp4']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
 filename_prefix_format = "%Y-%m-%d"
 
 def move_files( file_list, dry_run=True):
+  i = 0
   for f in file_list:
+#    if (i > 5):
+#      print "did 5"
+#      return
     new_path = get_new_filename(os.path.normpath(f))
     print("Moving %s to %s" % (f, new_path))
     if (not dry_run):
@@ -17,6 +21,7 @@ def move_files( file_list, dry_run=True):
       if (not os.path.exists(dir_name)):
         os.makedirs(dir_name)
       os.rename(f, new_path)
+      i = i+1
 
 def get_file_list( src_path, recursive=True ):
   dir_list = os.listdir( src_path )
@@ -36,7 +41,7 @@ def get_file_list( src_path, recursive=True ):
 
 
 def get_new_filename( src_filename , with_digest=True):
-  file_ctime = time.localtime(os.path.getctime(src_filename))
+  file_ctime = time.localtime(os.path.getmtime(src_filename))
   digest=''
   if (with_digest):
     digest = hashlib.md5(open(src_filename, 'rb').read()).hexdigest()
