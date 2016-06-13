@@ -6,7 +6,7 @@ src_path = "/Volumes/hfs/backups/camera/Reorganized Movies/Newer/"
 tgt_path = "/Volumes/hfs/backups/camera/Reorganized Movies/py/"
 extensions = ['.mov', '.mp4']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
-filename_prefix_format = "%Y-%m-%d"
+filename_prefix_format = "%Y-%m-%d_%H%M%S"
 
 def move_files( file_list, dry_run=True):
   i = 0
@@ -51,8 +51,8 @@ def get_new_filename( src_filename , with_digest=True):
       [tgt_path, 
         time.strftime(path_format, file_ctime), 
         ".".join(
-          [new_prefix, digest[:8],
-            os.path.basename(src_filename)])])
+          [new_prefix, digest[:8], os.path.splitext(src_filename)[1][1:].lower()])])
+#            os.path.basename(src_filename)])])
   return new_path
 
 
