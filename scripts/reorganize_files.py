@@ -1,20 +1,55 @@
 #!/usr/bin/python
 
-import os, os.path, time, hashlib, sys, shutil
+import os, os.path, time, hashlib, sys, shutil, re, time
+import exifread
 
 #src_path = "/Volumes/hfs/backups/camera/Reorganized Movies/Newer/"
 src_path = sys.argv[1]
-tgt_path = "/Volumes/hfs/backups/camera/py2/"
-extensions = ['.mov', '.mp4', '.avi']
+tgt_path = "/Volumes/hfs/backups/camera/Reorganized Movies"
+tgt_path = "/Users/evan/temp"
+extensions = ['.mov', '.mp4', '.avi', 'jpg']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
+
+def is_jpg( file_name ):
+  for ext in [ 'jpg', 'jpeg' ]:
+    if file_name.lower().endswith(ext):
+      return True
+  return False
+
+def get_exiftags( file_name ):
+  if not is_jpg( file_name ):
+    return None
+
+  f = open(file_name, 'rb')
+  tags = exifread.process_file(f, details=False)
+  return tags
+
+def get_new_filename_jpg( src_filename, with_digest = True, digest = None):
+  tags = get_exiftags(src_filename)
+  jpg_date = time.strptime(str(tags['EXIF DateTimeOriginal']), '%Y:%m:%d %H:%M:%S')
+  jpg_cameramodel = re.sub(r'[^\w]+', '_', str(tags['Image Model']).lower())
+
+  new_prefix = time.strftime(filename_prefix_format, jpg_date)
+  new_filename = ".".join([new_prefix, jpg_cameramodel, digest[:8], os.path.splitext(src_filename)[1][1:].lower()])
+
+  new_path = "/".join([
+    tgt_path, 
+    time.strftime(path_format, jpg_date), 
+    new_filename
+    ])
+
+  print "New path: %s" % new_path
+  return new_path
+
+
 
 def move_files( file_list, dry_run=True, delete_identical_files=True):
   i = 0
   error_count = 0
   identical_file_count = 0
   for f in file_list:
-#    if (i > 5):
+    #    if (i > 5):
 #      print "did 5"
 #      return
     new_path = get_new_filename(os.path.normpath(f))
@@ -73,18 +108,26 @@ def get_file_list( src_path, recursive=True ):
 
 
 def get_new_filename( src_filename , with_digest=True):
-  file_ctime = time.localtime(os.path.getmtime(src_filename))
   digest=''
   if (with_digest):
     digest = hashlib.md5(open(src_filename, 'rb').read()).hexdigest()
 
-  new_prefix = time.strftime(filename_prefix_format, file_ctime)
-  new_path = "/".join(
-      [tgt_path, 
-        time.strftime(path_format, file_ctime), 
-        ".".join(
-          [new_prefix, digest[:8], os.path.splitext(src_filename)[1][1:].lower()])])
-#            os.path.basename(src_filename)])])
+  new_path = None
+
+  if is_jpg(src_filename):
+    new_path = get_new_filename_jpg( src_filename, with_digest, digest )
+  else:
+#    print "%s NOT A JPEG" % src_filename
+    file_ctime = time.localtime(os.path.getmtime(src_filename))
+    new_prefix = time.strftime(filename_prefix_format, file_ctime)
+    new_filename = ".".join([new_prefix, digest[:8], os.path.splitext(src_filename)[1][1:].lower()])
+
+    new_path = "/".join([
+      tgt_path, 
+      time.strftime(path_format, file_ctime), 
+      new_filename
+      ])
+
   return new_path
 
 
