@@ -5,8 +5,9 @@ import exifread
 
 #src_path = "/Volumes/hfs/backups/camera/Reorganized Movies/Newer/"
 src_path = sys.argv[1]
-tgt_path = "/Volumes/hfs/backups/camera/Reorganized Movies"
-tgt_path = "/Users/evan/temp"
+#tgt_path = "/Volumes/hfs/backups/camera/Reorganized Media"
+tgt_path = sys.argv[2]
+#tgt_path = "/Users/evan/temp"
 extensions = ['.mov', '.mp4', '.avi', 'jpg']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
@@ -16,6 +17,18 @@ def is_jpg( file_name ):
     if file_name.lower().endswith(ext):
       return True
   return False
+
+def has_exiftags( file_name):
+  tags = get_exiftags( file_name )
+  if (tags == None):
+    return False
+
+  has_tags = True
+  for t in ['EXIF DateTimeOriginal', 'Image Model']:
+    if t not in tags:
+      has_tags = False
+
+  return has_tags
 
 def get_exiftags( file_name ):
   if not is_jpg( file_name ):
@@ -114,7 +127,7 @@ def get_new_filename( src_filename , with_digest=True):
 
   new_path = None
 
-  if is_jpg(src_filename):
+  if has_exiftags(src_filename):
     new_path = get_new_filename_jpg( src_filename, with_digest, digest )
   else:
 #    print "%s NOT A JPEG" % src_filename
