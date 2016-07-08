@@ -8,7 +8,7 @@ src_path = sys.argv[1]
 #tgt_path = "/Volumes/hfs/backups/camera/Reorganized Media"
 tgt_path = sys.argv[2]
 #tgt_path = "/Users/evan/temp"
-extensions = ['.mov', '.mp4', '.avi', 'jpg']
+extensions = ['.mov', '.mp4', '.avi', 'jpg', 'jpeg']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
 
@@ -52,7 +52,7 @@ def get_new_filename_jpg( src_filename, with_digest = True, digest = None):
     new_filename
     ])
 
-  print "New path: %s" % new_path
+#  print "New path: %s" % new_path
   return new_path
 
 
@@ -66,7 +66,7 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
 #      print "did 5"
 #      return
     new_path = get_new_filename(os.path.normpath(f))
-    print("Moving %s to %s" % (f, new_path))
+    print("%s => %s" % (f, new_path))
     if (not dry_run):
       dir_name = os.path.dirname(new_path)
       if (not os.path.exists(dir_name)):
@@ -112,6 +112,7 @@ def get_file_list( src_path, recursive=True ):
       for e in extensions:
         if (full_path.lower().endswith(e)):
           file_list.append(full_path)
+#          print "Considering %s" % full_path
     else:
       if (os.path.isdir(full_path) and recursive):
         file_list = file_list + get_file_list(full_path, True)
@@ -123,7 +124,10 @@ def get_file_list( src_path, recursive=True ):
 def get_new_filename( src_filename , with_digest=True):
   digest=''
   if (with_digest):
-    digest = hashlib.md5(open(src_filename, 'rb').read()).hexdigest()
+    try:
+      digest = hashlib.md5(open(src_filename, 'rb').read()).hexdigest()
+    except IOError as e:
+      print "Unable to calculate MD5 for %s: %s" % (src_filename, e.strerror)
 
   new_path = None
 
