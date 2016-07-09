@@ -8,7 +8,7 @@ src_path = sys.argv[1]
 #tgt_path = "/Volumes/hfs/backups/camera/Reorganized Media"
 tgt_path = sys.argv[2]
 #tgt_path = "/Users/evan/temp"
-extensions = ['.mov', '.mp4', '.avi', 'jpg', 'jpeg']
+extensions = ['.mov', '.mp4', '.avi', 'jpg', 'jpeg', '.m4v', '.bmp']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
 
