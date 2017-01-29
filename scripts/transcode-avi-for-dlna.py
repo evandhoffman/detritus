@@ -2,12 +2,12 @@
 
 # Transcode files to DLNA-compatible x264/AAC and retain original file's timestamp
 
-import os, os.path, time, hashlib, sys, shutil, re, time, subprocess
+import os, os.path, time, hashlib, sys, shutil, re, time, subprocess, datetime
 
 src_path = sys.argv[1]
 tgt_path = sys.argv[2]
 
-extensions = ['.avi']
+extensions = ['.avi','.mpg']
 path_format = "%Y/%Y-%m/%Y-%m-%d"
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
 
@@ -26,7 +26,6 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
     
 
     new_path = get_new_filename(os.path.normpath(f))
-    print("Transcode %s ---TO---> %s" % (f, new_path))
     if (not dry_run):
       dir_name = os.path.dirname(new_path)
       if (not os.path.exists(dir_name)):
@@ -43,15 +42,23 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
       else:
         try:
            original_file_modtime = os.path.getmtime(f)
-           ffmpeg_command = ['/usr/bin/ffmpeg', '-i', f, '-codec:v','libx264','-crf','22','-pix_fmt','yuv420p','-codec:a','libfdk_aac','-b:a','256k',new_path]
+           ffmpeg_command = ['/usr/bin/ffmpeg', '-i', f, '-codec:v','libx265','-crf','18','-pix_fmt','yuv420p','-codec:a','libfdk_aac','-b:a','256k',new_path]
+           s = datetime.datetime.now()
            output = subprocess.check_output(ffmpeg_command, stderr=subprocess.STDOUT)           
            os.utime(new_path, (original_file_modtime, original_file_modtime ))
+           e = datetime.datetime.now()
+
+           old_size = os.path.getsize(f)
+           new_size = os.path.getsize(new_path)
+           ratio = (new_size * 1.0 / old_size) * 100
+
+           print("Transcode %s ---TO---> %s took %s. Old: %0.1f MB New: %0.1f MB Compression: %0.1f %%" % (f, new_path, str(e - s), old_size / 1e6, new_size / 1e6, ratio  ))
            
 #          shutil.move(f, new_path)
 	except NameError as ne:
 		print "NameError: %s" % ne
         except Exception as e:
-          print "Unable to transcode %s: Code %s, Output %s" % (f, e.returncode, e.output)
+          print "Unable to transcode %s: %s" % (f, str(e))
       i = i+1
   print "Errors: %d.  Identical files: %d." % (error_count, identical_file_count)
 
@@ -96,7 +103,7 @@ def get_new_filename( src_filename ):
   file_ctime = time.localtime(os.path.getmtime(src_filename))
 #  new_prefix = time.strftime(filename_prefix_format, file_ctime)
   new_prefix = os.path.splitext(os.path.split(src_filename)[1])[0]
-  new_filename = ".".join([new_prefix, 'm4v'])
+  new_filename = ".".join([new_prefix, 'mp4'])
 
   new_path = "/".join([
     tgt_path, 
@@ -108,4 +115,4 @@ def get_new_filename( src_filename ):
 
 
 #f = get_file_list(src_path)
-f = move_files(get_file_list(os.path.abspath(src_path)), dry_run=False)
+f = move_files(sorted(get_file_list(os.path.abspath(src_path))), dry_run=False)
