@@ -14,16 +14,17 @@ filename_prefix_format = "%Y-%m-%d_%H%M%S"
 
 
 
-def move_files( file_list, dry_run=True, delete_identical_files=True):
+def transcode_files( file_list, dry_run=True, delete_identical_files=True):
   i = 0
   error_count = 0
+  success_count = 0
   identical_file_count = 0
-  for f in file_list:
-    #    if (i > 5):
-#      print "did 5"
-#      return
 
-    
+  total_start = datetime.datetime.now()
+
+  for f in file_list:
+    if (i > 3) 
+      break
 
     new_path = get_new_filename(os.path.normpath(f))
     if (not dry_run):
@@ -33,12 +34,6 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
       if (os.path.exists(new_path)):
         print "WARN: File already exists: %s" % new_path
         error_count = error_count + 1
-#        if (files_are_identical(f, new_path)):
-#          print "INFO: Source and target files are identical"
-#          identical_file_count = identical_file_count + 1
-#          if (delete_identical_files):
-#            print "INFO: Deleting file %s" % f
-#            os.remove(f)
       else:
         try:
            original_file_modtime = os.path.getmtime(f)
@@ -53,6 +48,7 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
            ratio = (new_size * 1.0 / old_size) * 100
 
            print("Transcode %s ---TO---> %s took %s. Old: %0.1f MB New: %0.1f MB Compression: %0.1f %%" % (f, new_path, str(e - s), old_size / 1e6, new_size / 1e6, ratio  ))
+           success_count = success_count + 1
            
 #          shutil.move(f, new_path)
 	except NameError as ne:
@@ -60,7 +56,10 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
         except Exception as e:
           print "Unable to transcode %s: %s" % (f, str(e))
       i = i+1
-  print "Errors: %d.  Identical files: %d." % (error_count, identical_file_count)
+
+  total_end = datetime.datetime.now()
+  total_elapsed = total_end - total_start
+  print "Files transcoded: %d. Errors: %d.  Identical files: %d. Total time elapsed: %s" % (success_count, error_count, identical_file_count, str(total_elapsed))
 
 def files_are_identical (a, b):
   size_a = os.path.getsize(a)
@@ -115,4 +114,4 @@ def get_new_filename( src_filename ):
 
 
 #f = get_file_list(src_path)
-f = move_files(sorted(get_file_list(os.path.abspath(src_path))), dry_run=False)
+f = transcode_files(sorted(get_file_list(os.path.abspath(src_path))), dry_run=False)
