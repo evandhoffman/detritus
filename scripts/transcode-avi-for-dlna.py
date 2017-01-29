@@ -23,8 +23,6 @@ def transcode_files( file_list, dry_run=True, delete_identical_files=True):
   total_start = datetime.datetime.now()
 
   for f in file_list:
-    if (i > 3) 
-      break
 
     new_path = get_new_filename(os.path.normpath(f))
     if (not dry_run):
