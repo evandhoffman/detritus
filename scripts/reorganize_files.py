@@ -8,9 +8,28 @@ src_path = sys.argv[1]
 #tgt_path = "/Volumes/hfs/backups/camera/Reorganized Media"
 tgt_path = sys.argv[2]
 #tgt_path = "/Users/evan/temp"
-extensions = ['.mov', '.mp4', '.avi', 'jpg', 'jpeg', '.m4v', '.bmp']
-path_format = "%Y/%Y-%m/%Y-%m-%d"
+
+photo_extensions = ['jpg', 'jpeg', '.bmp']
+video_extensions = ['.mov', '.mp4', '.avi', '.m4v' ]
+
+extensions = photo_extensions + video_extensions
+
+photo_path_format = "Photos/%Y/%Y-%m"
+video_path_format = "Videos/%Y/%Y-%m"
+
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
+
+def is_photo ( file_name ):
+  for ext in photo_extensions:
+    if file_name.lower().endswith(ext):
+      return True
+  return False
+
+def is_video ( file_name ):
+  for ext in video_extensions:
+    if file_name.lower().endswith(ext):
+      return True
+  return False
 
 def is_jpg( file_name ):
   for ext in [ 'jpg', 'jpeg' ]:
@@ -48,7 +67,7 @@ def get_new_filename_jpg( src_filename, with_digest = True, digest = None):
 
   new_path = "/".join([
     tgt_path, 
-    time.strftime(path_format, jpg_date), 
+    time.strftime(photo_path_format, jpg_date), 
     new_filename
     ])
 
@@ -139,9 +158,14 @@ def get_new_filename( src_filename , with_digest=True):
     new_prefix = time.strftime(filename_prefix_format, file_ctime)
     new_filename = ".".join([new_prefix, digest[:8], os.path.splitext(src_filename)[1][1:].lower()])
 
+    if (is_video(new_filename)):
+      pathformat = video_path_format
+    else:
+      pathformat = photo_path_format
+
     new_path = "/".join([
       tgt_path, 
-      time.strftime(path_format, file_ctime), 
+      time.strftime(pathformat, file_ctime), 
       new_filename
       ])
 

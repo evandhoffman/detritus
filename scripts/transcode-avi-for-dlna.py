@@ -35,7 +35,7 @@ def transcode_files( file_list, dry_run=True, delete_identical_files=True):
       else:
         try:
            original_file_modtime = os.path.getmtime(f)
-           ffmpeg_command = ['/usr/bin/ffmpeg', '-i', f, '-codec:v','libx265','-crf','18','-pix_fmt','yuv420p','-codec:a','libfdk_aac','-b:a','256k',new_path]
+           ffmpeg_command = ['/usr/bin/ffmpeg', '-i', f, '-codec:v','libx264','-crf','18','-pix_fmt','yuv420p','-codec:a','libfdk_aac','-b:a','256k',new_path]
            s = datetime.datetime.now()
            output = subprocess.check_output(ffmpeg_command, stderr=subprocess.STDOUT)           
            os.utime(new_path, (original_file_modtime, original_file_modtime ))
