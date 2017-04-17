@@ -24,12 +24,14 @@ def read_callback(data=None):
 
     results_dict = s.results.dict()
 
+    server = results_dict['server']
+
     # Ping
     ping = collectd.Values()
     ping.plugin = 'speedtest'
 #    ping.interval = 300
     ping.type = 'ping'
-    ping.type_instance = 'ping'
+    ping.type_instance = 'Ping (%s, %s)' % ( server['name'], server['sponsor'] )
     ping.values = [ results_dict['ping'] ]
     ping.dispatch()
 
@@ -38,7 +40,7 @@ def read_callback(data=None):
     dl.plugin = 'speedtest'
     dl.type = 'gauge'
 #    dl.interval = 300
-    dl.type_instance = 'download'
+    dl.type_instance = 'Download (%s, %s)' % ( server['name'], server['sponsor'] )
     dl.values = [ results_dict['download'] ]
     dl.dispatch()
 
@@ -47,7 +49,7 @@ def read_callback(data=None):
     ul.plugin = 'speedtest'
     ul.type = 'gauge'
 #    ul.interval = 300
-    ul.type_instance = 'upload'
+    ul.type_instance = 'Upload (%s, %s)' % ( server['name'], server['sponsor'] )
     ul.values = [ results_dict['upload'] ]
     ul.dispatch()
 
