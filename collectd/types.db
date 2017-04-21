@@ -1,2 +1,1 @@
-speedtest_upload	value:GAUGE:0:U
-speedtest_download	value:GAUGE:0:U
+speedtest	value:GAUGE:0:U, value:GAUGE:0:U
