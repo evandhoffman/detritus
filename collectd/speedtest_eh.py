@@ -35,6 +35,9 @@ def read_callback(data=None):
     ping.values = [ results_dict['ping'] ]
     ping.dispatch()
 
+    ping.type_instance = 'Ping (aggr)'
+    ping.dispatch()
+
     # Download
     dl = collectd.Values()
     dl.plugin = 'speedtest'
@@ -44,6 +47,9 @@ def read_callback(data=None):
     dl.values = [ results_dict['download'] ]
     dl.dispatch()
 
+    dl.type_instance = 'Download (aggr)'
+    dl.dispatch()
+
     # Upload
     ul = collectd.Values()
     ul.plugin = 'speedtest'
@@ -51,6 +57,9 @@ def read_callback(data=None):
 #    ul.interval = 300
     ul.type_instance = 'Upload (%s, %s)' % ( server['name'], server['sponsor'] )
     ul.values = [ results_dict['upload'] ]
+    ul.dispatch()
+
+    ul.type_instance = 'Upload (aggr)'
     ul.dispatch()
 
     print "download speed was %s" % results_dict['download']
