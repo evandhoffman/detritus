@@ -45,7 +45,7 @@ def read_callback(data=None):
     dl.type_instance = '%s, %s' % ( server['name'], server['sponsor'] )
     dl.values = [ results_dict['download'] , results_dict['upload']]
     dl.dispatch()
-    print "Download: %s Mb/s, Upload: %s Mb/s. Server: %s, Sponsor: %s" % (results_dict['download'] / 1e9, results_dict['upload'] / 1e9, server['name'], server['sponsor'])
+    print "Download: %s Mb/s, Upload: %s Mb/s. Server: %s, Sponsor: %s" % (results_dict['download'] / 1e6, results_dict['upload'] / 1e6, server['name'], server['sponsor'])
 
     dl.type_instance = 'Aggregated'
     dl.dispatch()
@@ -53,5 +53,5 @@ def read_callback(data=None):
 
 
 collectd.register_init(restore_sigchld)
-collectd.register_read(read_callback, 120)
+collectd.register_read(read_callback, 900)
 
