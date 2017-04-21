@@ -1,1 +1,1 @@
-speedtest	value:GAUGE:0:U, value:GAUGE:0:U
+speedtest	dl:GAUGE:0:U, ul:GAUGE:0:U

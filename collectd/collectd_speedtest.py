@@ -31,39 +31,27 @@ def read_callback(data=None):
     ping.plugin = 'speedtest'
 #    ping.interval = 300
     ping.type = 'ping'
-    ping.type_instance = 'Ping (%s, %s)' % ( server['name'], server['sponsor'] )
+    ping.type_instance = '%s, %s' % ( server['name'], server['sponsor'] )
     ping.values = [ results_dict['ping'] ]
     ping.dispatch()
 
-    ping.type_instance = 'Ping (aggr)'
+    ping.type_instance = 'Aggregated'
     ping.dispatch()
+    print "ping time was %s ms" % results_dict['ping']
 
-    # Download
     dl = collectd.Values()
     dl.plugin = 'speedtest'
-    dl.type = 'gauge'
-#    dl.interval = 300
-    dl.type_instance = 'Download (%s, %s)' % ( server['name'], server['sponsor'] )
-    dl.values = [ results_dict['download'] ]
+    dl.type = 'speedtest'
+    dl.type_instance = '%s, %s' % ( server['name'], server['sponsor'] )
+    dl.values = [ results_dict['download'] , results_dict['upload']]
+    dl.dispatch()
+    print "Download: %s Mb/s, Upload: %s Mb/s. Server: %s, Sponsor: %s" % (results_dict['download'] / 1e9, results_dict['upload'] / 1e9, server['name'], server['sponsor'])
+
+    dl.type_instance = 'Aggregated'
     dl.dispatch()
 
-    dl.type_instance = 'Download (aggr)'
-    dl.dispatch()
 
-    # Upload
-    ul = collectd.Values()
-    ul.plugin = 'speedtest'
-    ul.type = 'gauge'
-#    ul.interval = 300
-    ul.type_instance = 'Upload (%s, %s)' % ( server['name'], server['sponsor'] )
-    ul.values = [ results_dict['upload'] ]
-    ul.dispatch()
-
-    ul.type_instance = 'Upload (aggr)'
-    ul.dispatch()
-
-    print "download speed was %s" % results_dict['download']
 
 collectd.register_init(restore_sigchld)
-collectd.register_read(read_callback, 900)
+collectd.register_read(read_callback, 120)
 
