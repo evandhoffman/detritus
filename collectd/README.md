@@ -3,3 +3,6 @@ I created this collectd plugin to allow me to test my internet connection speed 
 servers and in aggregate.  You can specify a test location or let it choose the test server automatically.  For consistency I 
 specify a server.
 
+![bandwidth](https://github.com/evandhoffman/detritus/raw/master/collectd/graph-1.png)
+
+![latency](https://github.com/evandhoffman/detritus/raw/master/collectd/graph.png)
