@@ -8,7 +8,7 @@ src_path = sys.argv[1]
 tgt_path = sys.argv[2]
 
 extensions = ['.avi','.mpg']
-path_format = "%Y/%Y-%m/%Y-%m-%d"
+path_format = "Transcodes/%Y/%Y-%m/"
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
 
 
@@ -88,6 +88,7 @@ def get_file_list( src_path, recursive=True ):
       if (os.path.isdir(full_path) and recursive):
         file_list = file_list + get_file_list(full_path, True)
 
+  print "Found %d files to transcode" % len(file_list)
   return file_list
 
 
@@ -100,7 +101,7 @@ def get_new_filename( src_filename ):
   file_ctime = time.localtime(os.path.getmtime(src_filename))
 #  new_prefix = time.strftime(filename_prefix_format, file_ctime)
   new_prefix = os.path.splitext(os.path.split(src_filename)[1])[0]
-  new_filename = ".".join([new_prefix, 'mp4'])
+  new_filename = ".".join([new_prefix, 'converted.mp4'])
 
   new_path = "/".join([
     tgt_path, 
