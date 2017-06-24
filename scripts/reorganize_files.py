@@ -54,6 +54,7 @@ def get_exiftags( file_name ):
     return None
 
   f = open(file_name, 'rb')
+  print "getting tags for %s" % file_name
   tags = exifread.process_file(f, details=False)
   return tags
 
