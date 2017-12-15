@@ -158,6 +158,7 @@ def get_new_filename( src_filename , with_digest=True):
 #    print "%s NOT A JPEG" % src_filename
     file_ctime = time.localtime(os.path.getmtime(src_filename))
     new_prefix = time.strftime(filename_prefix_format, file_ctime)
+    #new_filename = ".".join([new_prefix, "anthony", digest[:8], os.path.splitext(src_filename)[1][1:].lower()])
     new_filename = ".".join([new_prefix, digest[:8], os.path.splitext(src_filename)[1][1:].lower()])
 
     if (is_video(new_filename)):
