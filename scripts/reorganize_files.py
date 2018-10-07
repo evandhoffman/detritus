@@ -54,7 +54,7 @@ def get_exiftags( file_name ):
     return None
 
   f = open(file_name, 'rb')
-  print "getting tags for %s" % file_name
+  print("getting tags for %s" % file_name)
   tags = exifread.process_file(f, details=False)
   return tags
 
@@ -92,21 +92,21 @@ def move_files( file_list, dry_run=True, delete_identical_files=True):
       if (not os.path.exists(dir_name)):
         os.makedirs(dir_name)
       if (os.path.exists(new_path)):
-        print "WARN: File already exists: %s" % new_path
+        print("WARN: File already exists: %s" % new_path)
         error_count = error_count + 1
         if (files_are_identical(f, new_path)):
-          print "INFO: Source and target files are identical"
+          print("INFO: Source and target files are identical")
           identical_file_count = identical_file_count + 1
           if (delete_identical_files):
-            print "INFO: Deleting file %s" % f
+            print("INFO: Deleting file %s" % f)
             os.remove(f)
       else:
         try:
           shutil.move(f, new_path)
         except Exception as e:
-          print "Unable to move %s: %s" % (f, e.strerror)
+          print("Unable to move %s: %s" % (f, e.strerror))
       i = i+1
-  print "Errors: %d.  Identical files: %d." % (error_count, identical_file_count)
+  print("Errors: %d.  Identical files: %d." % (error_count, identical_file_count))
 
 def files_are_identical (a, b):
   size_a = os.path.getsize(a)
@@ -147,7 +147,7 @@ def get_new_filename( src_filename , with_digest=True):
     try:
       digest = hashlib.md5(open(src_filename, 'rb').read()).hexdigest()
     except IOError as e:
-      print "Unable to calculate MD5 for %s: %s" % (src_filename, e.strerror)
+      print("Unable to calculate MD5 for %s: %s" % (src_filename, e.strerror))
 
   new_path = None
 
