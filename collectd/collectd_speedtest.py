@@ -11,7 +11,9 @@ def restore_sigchld():
 def read_callback(data=None):
     print "I'm in the read_callback now bruh"
 
-    servers = []
+#    servers = [663] # optimum
+    servers = [10546]
+#    servers = []
     # If you want to test against a specific server
     # servers = [1234]
 

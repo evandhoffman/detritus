@@ -18,6 +18,7 @@ photo_path_format = "Photos/%Y/%Y-%m"
 video_path_format = "Videos/%Y/%Y-%m"
 
 filename_prefix_format = "%Y-%m-%d_%H%M%S"
+#filename_prefix_format = "%Y-%m-%d_%H%M%S.lisa"
 
 def is_photo ( file_name ):
   for ext in photo_extensions:
